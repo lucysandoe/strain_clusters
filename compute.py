@@ -2,10 +2,24 @@
 def input():
 
 def configure():
-	#take strain tensors and decompose into principal strains (strain_tensor_toolbox eigenvectors)
-	#first principal strain has direction, magnitude
-	#second principal strain has sign (+/-)
-	#turn into points in 3D (x, y, z)
+	# strain tensors and decompose into principal strains (strain_tensor_toolbox eigenvectors)
+	# first principal strain has direction, magnitude
+	# second principal strain has sign (+/-)
+	# turn into points in 3D coords (x, y, z)
+	# make eig dictionary with location, principals, coords
+
+	def make_eig(location, w0, w1, coords):
+		return {"location": location, "1st_principal": w0, "2nd_principal":w1 , "coords": coords}
+
+	def eig_location(eig):
+		return eig["location"]
+	def eig_1st(eig):
+		return eig["1st_principal"]
+	def eig_2nd(eig):
+		return eig["2nd_principal"]
+	def eig_coords(eig):
+		return eig["coords"]
+
 
 def cluster():
 
@@ -17,20 +31,19 @@ def cluster():
     	return [[y for x, y in pairs if x == key] for key in keys]
 
 	def group_by_centroid(restaurants, centroids):
-    #Return a list of clusters, where each cluster contains all eigs nearest to a corresponding centroid in centroids. 
+    # Return a list of clusters, where each cluster contains all eigs nearest to a corresponding centroid in centroids. 
     	d = []
     	for eig in eigs:
         	cent = find_closest(converted_eig(eig), centroids)
         	d.append([cent, eig])
     	return group_by_first(d)
-    # END Question 4
 
 
-def find_centroid(cluster):
-    x = mean([converted_eig(i)[0] for i in cluster])
-    y = mean([converted_eig(i)[1] for i in cluster])
-    z = mean([converted_eig(i)[2] for i in cluster])
-    return [x, y, z]
+	def find_centroid(cluster):
+    	x = mean([converted_eig(i)[0] for i in cluster])
+    	y = mean([converted_eig(i)[1] for i in cluster])
+    	z = mean([converted_eig(i)[2] for i in cluster])
+    	return [x, y, z]
 
 	def k_means(eigenvectors, k, max_updates = 200):
 		assert len(eigenvectors) >= k,
